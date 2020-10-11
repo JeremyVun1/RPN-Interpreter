@@ -1,0 +1,93 @@
+options
+{
+	static = false;
+	output_directory="parser";
+}
+
+PARSER_BEGIN(PCodeParser)
+
+package parser;
+
+import java.io.*;
+import ast.*;
+import java.util.ArrayList;
+
+public class PCodeParser
+{
+}
+
+PARSER_END(PCodeParser)
+
+ArrayList<PCode> Parse():
+{
+	ArrayList<PCode> result = new ArrayList<PCode>();
+	PCode instruction = null;
+}
+{
+	(instruction = PCodeInstruction() { result.add(instruction); })+ <EOF>
+	{
+		return result;
+	}
+}
+
+PCode PCodeInstruction():
+{
+	PCodeArgument arg;
+	Token tok;
+	Token var;
+	Token msg;
+}
+{
+	tok = "printf" var = <Number> msg = <String>
+	{ return new Printf(tok, var, msg); }
+	|
+	tok = "add" { return new Add(tok); }
+	|
+	tok = "sub" { return new Sub(tok); }
+	|
+	tok = "mul" { return new Mul(tok); }
+	|
+	tok = "div" { return new Div(tok); }
+	|
+	tok = "dup" { return new Dup(tok); }
+	|
+	tok = "load" arg = Argument()
+	{ return new Load(tok, arg); }
+	|
+	tok = "store" var = < Variable >
+	{ return new Store(tok, var); }
+}
+
+PCodeArgument Argument() :
+{
+	Token arg;
+}
+{
+	arg = <Variable> { return new Variable(arg); }
+	|
+	arg = <Number> { return new ast.Number(arg); }
+}
+
+SKIP :
+{
+		" "
+	|
+		"\t"
+	|
+		"\r"
+	|
+		"\n"
+	|
+		< "//" (~["\n"])* "\n" >
+}
+
+TOKEN :
+{
+		< Variable : "$" (["a"-"z","A"-"Z","0"-"9","_"])+ >
+	| 
+		< #DIGIT : ["0"-"9"] >
+	| 
+		< Number : (< DIGIT >)+ ("." (< DIGIT >)*)? ("E" ("+"|"-")? (< DIGIT >)+)? >
+	| 
+		< String : "\"" (~["\""])* "\"" >
+}

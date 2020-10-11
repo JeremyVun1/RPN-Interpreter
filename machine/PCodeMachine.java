@@ -25,92 +25,6 @@ public class PCodeMachine implements PCodeVisitor {
         memory = new Hashtable<String, BigDecimal>();
     }
 
-    private String buildFormattedString(int stackValues, String formatString)
-	{
-		BigDecimal printArguments[] = new BigDecimal[stackValues];
-
-		StringBuilder formattedString = new StringBuilder();
-		int length = formatString.length();
-
-		// fetch required stack arguments	
-		for (int i=stackValues; i > 0;) {
-			printArguments[--i] = stack.pop();
-		}
-		
-		// traverse the format string
-		int j = 0;
-		while (j < length)
-		{
-			switch (formatString.charAt(j))
-			{
-			case '%':
-				// test for applicable format specification
-				j++;
-				StringBuffer stackIndex = new StringBuffer();
-
-				while (j < length)
-				{
-					char c = formatString.charAt(j);
-					if (Character.isDigit(c))
-					{
-						stackIndex.append(c);
-						j++;
-					}
-					else break;
-				}
-				
-				if (stackIndex.length() > 0)	// is a format specifier
-				{
-					int index = Integer.parseInt(stackIndex.toString()) - 1;
-					
-					if (index > printArguments.length)
-					{
-						new RuntimeException("Value reference out of bounds.");
-					}
-					else
-					{
-						formattedString.append(printArguments[index]);
-					}
-				}
-				else
-				{
-					formattedString.append('%');
-				}
-				break;
-			
-			case '\\':
-				j++;
-				
-				if (j < length)
-				{
-					char c = formatString.charAt(j);
-					j++;
-					
-					switch (c)
-					{
-					case 'n':
-						formattedString.append( '\n' );
-						break;
-					case 't':
-						formattedString.append( '\t' );
-						break;
-					default:
-						formattedString.append( '\\' );
-						formattedString.append(c);
-					}
-				}
-				
-				break;
-			
-			default:
-				formattedString.append(formatString.charAt(j));
-				j++; 
-			}
-		}
-		
-		return formattedString.toString();
-	}
-
     public void visit(Add instruction) {
         if (stack.size() < 2)
             throw new RuntimeException("Not enough numbers to add");
@@ -204,4 +118,90 @@ public class PCodeMachine implements PCodeVisitor {
             System.out.println(varName + ":\t" + value);
         });
     }
+
+    private String buildFormattedString(int stackValues, String formatString)
+	{
+		BigDecimal printArguments[] = new BigDecimal[stackValues];
+
+		StringBuilder formattedString = new StringBuilder();
+		int length = formatString.length();
+
+		// fetch required stack arguments	
+		for (int i=stackValues; i > 0;) {
+			printArguments[--i] = stack.pop();
+		}
+		
+		// traverse the format string
+		int j = 0;
+		while (j < length)
+		{
+			switch (formatString.charAt(j))
+			{
+			case '%':
+				// test for applicable format specification
+				j++;
+				StringBuffer stackIndex = new StringBuffer();
+
+				while (j < length)
+				{
+					char c = formatString.charAt(j);
+					if (Character.isDigit(c))
+					{
+						stackIndex.append(c);
+						j++;
+					}
+					else break;
+				}
+				
+				if (stackIndex.length() > 0)	// is a format specifier
+				{
+					int index = Integer.parseInt(stackIndex.toString()) - 1;
+					
+					if (index > printArguments.length)
+					{
+						new RuntimeException("Value reference out of bounds.");
+					}
+					else
+					{
+						formattedString.append(printArguments[index]);
+					}
+				}
+				else
+				{
+					formattedString.append('%');
+				}
+				break;
+			
+			case '\\':
+				j++;
+				
+				if (j < length)
+				{
+					char c = formatString.charAt(j);
+					j++;
+					
+					switch (c)
+					{
+					case 'n':
+						formattedString.append( '\n' );
+						break;
+					case 't':
+						formattedString.append( '\t' );
+						break;
+					default:
+						formattedString.append( '\\' );
+						formattedString.append(c);
+					}
+				}
+				
+				break;
+			
+			default:
+				formattedString.append(formatString.charAt(j));
+				j++; 
+			}
+		}
+		
+		return formattedString.toString();
+	}
 }

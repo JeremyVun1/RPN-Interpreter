@@ -12,14 +12,14 @@ class Main {
     public static void main(String[] args) {
         try
 		{
-			String filename = "pcode\\program.pcode";
+			String filename = "pcode\\" + args[0];
 			PCodeParser parser = new PCodeParser(new FileInputStream(filename));
 
 			// Parse and build the AST
 			ArrayList<PCode> instructions = parser.Parse();
 			System.out.println("PCode accepted:");
 			for (PCode pc : instructions) {
-				//System.out.println(pc);
+				System.out.println(pc);
 			}
 
 			// Evaluate the AST

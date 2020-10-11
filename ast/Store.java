@@ -4,21 +4,21 @@ import parser.Token;
 import machine.PCodeVisitor;
 
 public class Store extends PCode {
-    private String var;
+    private String varName;
 
-    public Store(Token instruction, Token var) {
+    public Store(Token instruction, Token varName) {
         super(instruction);
-        this.var = var.image;
+        this.varName = varName.image;
     }
 
     public String getVariableName() {
-        return this.var;
+        return this.varName;
     }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("store\t");
-        sb.append(this.var);
+        sb.append(this.varName);
         
         return sb.toString();
     }

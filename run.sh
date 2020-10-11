@@ -5,6 +5,13 @@ if [ -z $1 ]
         PARSER=$1
 fi
 
+if [ -z $2 ]
+    then
+        PCODE="program.pcode"
+    else
+        PCODE=$2
+fi
+
 javacc $PARSER
 javac $(find -name "*.java") -d bin
-java -classpath bin Main
+java -classpath bin Main $PCODE

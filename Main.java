@@ -12,7 +12,7 @@ class Main {
     public static void main(String[] args) {
         try
 		{
-			String filename = "prog1.pcode";
+			String filename = "pcode\\program.pcode";
 			PCodeParser parser = new PCodeParser(new FileInputStream(filename));
 
 			// Parse and build the AST

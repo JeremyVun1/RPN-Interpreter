@@ -1,5 +1,0 @@
-load a
-load 2
-add
-dup
-printf 1 "%1\n"

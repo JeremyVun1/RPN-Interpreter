@@ -1,8 +1,10 @@
 if [ -z $1 ]
     then
-        echo "Specify parser file"
+        PARSER="PCodeParser.jj"
     else
-        javacc $1
-        javac $(find -name "*.java") -d bin
-        java -classpath bin src/Main
+        PARSER=$1
 fi
+
+javacc $PARSER
+javac $(find -name "*.java") -d bin
+java -classpath bin Main
